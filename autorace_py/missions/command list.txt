@@ -1,0 +1,33 @@
+line tracing direction
+ros2 topic pub --once /direction std_msgs/msg/String "{data: 'right'}"
+ros2 topic pub --once /direction std_msgs/msg/String "{data: 'left'}"
+
+line node play
+ros2 lifecycle set /line_tracing configure
+ros2 lifecycle set /line_tracing activate
+
+construction node play
+ros2 lifecycle set /construction configure
+ros2 lifecycle set /construction activate
+
+line motor
+ros2 topic pub --once /line_motor_state std_msgs/msg/String "{data: 'play'}"
+ros2 topic pub --once /line_motor_state std_msgs/msg/String "{data: 'stop'}"
+
+odom test
+ros2 topic pub --once /start_sign std_msgs/msg/String "{data: 'play'}"
+ros2 topic pub --once /start_sign std_msgs/msg/String "{data: 'stop'}"
+
+construction motor
+ros2 topic pub --once /construction_motor_state std_msgs/msg/String "{data: 'play'}"
+ros2 topic pub --once /construction_motor_state std_msgs/msg/String "{data: 'stop'}"
+
+tunnel motor
+ros2 topic pub --once /tunnel_motor_state std_msgs/msg/String "{data: 'play'}"
+ros2 topic pub --once /tunnel_motor_state std_msgs/msg/String "{data: 'stop'}"
+
+mission change
+ros2 topic pub --once /mission_change std_msgs/msg/String "{data: 'construction'}"
+
+parking next action
+ros2 topic pub --once /parking_action std_msgs/msg/String "{data: 'next'}"
