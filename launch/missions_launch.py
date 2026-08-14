@@ -13,34 +13,34 @@ def generate_launch_description():
     return LaunchDescription(
         [
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "line_tracing"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "line_tracing"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "traffic_light"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "traffic_light"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "intersection"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "intersection"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "construction_sign"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "construction_sign"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "construction"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "construction"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "parking_sign"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "parking_sign"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "parking"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "parking"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "blockbar"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "blockbar"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "tunnel_sign"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "tunnel_sign"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "tunnel_right_hand"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "tunnel_right_hand"], output="screen"
             )
         ]
     )

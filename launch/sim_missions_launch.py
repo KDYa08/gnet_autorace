@@ -13,34 +13,34 @@ def generate_launch_description():
     return LaunchDescription(
         [
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "line_tracing", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "line_tracing", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "traffic_light", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "traffic_light", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "intersection", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "intersection", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "construction_sign", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "construction_sign", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "construction", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "construction", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "parking_sign", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "parking_sign", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "parking", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "parking", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "blockbar", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "blockbar", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "tunnel_sign", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "tunnel_sign", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             ),
             ExecuteProcess(
-                cmd=["ros2", "run", "gm_autorace", "tunnel_right_hand", "--ros-args", "-p", "sim_bool:=True"], output="screen"
+                cmd=["ros2", "run", "gnet_autorace", "tunnel_right_hand", "--ros-args", "-p", "sim_bool:=True"], output="screen"
             )
         ]
     )

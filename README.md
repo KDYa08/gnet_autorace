@@ -21,7 +21,7 @@
 ## 🗂 프로젝트 구조 개요
 
 ```text
-gm_autorace/
+gnet_autorace/
 ├── core/
 │   └── core_node.py        # mission lifecycle 상태 제어
 ├── missions/
@@ -67,7 +67,7 @@ ros2 lifecycle set /barrier deactivate
 * 장애물 감지
 
 ```bash
-ros2 launch gm_autorace missions_launch.py
+ros2 launch gnet_autorace missions_launch.py
 ```
 
 ---
@@ -77,7 +77,7 @@ ros2 launch gm_autorace missions_launch.py
 Line tracing 노드 또한 별도로 실행해야 합니다.
 
 ```bash
-ros2 run gm_autorace line_tracing
+ros2 run gnet_autorace line_tracing
 ```
 
 ---
@@ -87,7 +87,7 @@ ros2 run gm_autorace line_tracing
 Mission 상태를 제어하는 `core` 노드는 **단독 실행**합니다.
 
 ```bash
-ros2 run gm_autorace core
+ros2 run gnet_autorace core
 ```
 
 ---
