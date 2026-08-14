@@ -118,9 +118,9 @@ class Parking(LifecycleNode):
             self.get_logger().info(f"{np.count_nonzero(thresh)}")
             if self.checkpoint_num == 3:
                 if np.count_nonzero(thresh) >= 10000:
-                    self.left_parking = False
-                else:
                     self.left_parking = True
+                else:
+                    self.left_parking = False
                 self.checkpoint_num += 1
 
             cv2.imshow('parking_cam', src)
@@ -227,7 +227,7 @@ class Parking(LifecycleNode):
                         msg = String()
                         msg.data = 'left'
                         self.direction_publisher.publish(msg)
-                        msg.data = 'stop'
+                        msg.data = 'play'
                         self.line_motor_publisher.publish(msg)
                         msg.data = 'parking'
                         self.activate = False
