@@ -261,7 +261,6 @@ class Parking(LifecycleNode):
         self.cmd_vel_publisher.publish(msg)
     
     def check_action(self, msg):
-        data = msg.data
         self.checkpoint_num -= 9
         
 def main(args=None):
