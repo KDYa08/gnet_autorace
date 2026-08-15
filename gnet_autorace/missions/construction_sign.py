@@ -93,9 +93,9 @@ class ConstructionSign(LifecycleNode):
             # 사전에 촬영한 이미지 불러오기
             try:
                 if self.sim:
-                    construction_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/construction.jpg', 0)
+                    construction_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autoracemissions/sim_traffic_signs/construction.jpg', 0)
                 else:
-                    construction_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/construction.jpg', 0)
+                    construction_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autoracemissions/traffic_signs/construction.jpg', 0)
                 cv2.imshow("construction_sign", construction_template)
                 w, h = construction_template.shape[::-1]
                 box_loc = self.match_template(gray, construction_template)
@@ -116,7 +116,7 @@ class ConstructionSign(LifecycleNode):
                     return
                     
             except Exception as e:
-                construction_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/empty_img.jpg', 0)
+                construction_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autoracemissions/traffic_signs/empty_img.jpg', 0)
                 cv2.imshow("construction_sign", construction_template)
                 self.get_logger().info(f"{e}")
             
@@ -139,9 +139,9 @@ class ConstructionSign(LifecycleNode):
             # 키보드를 이용해 이미지 캡쳐
             elif key == ord('s'):
                 if self.sim:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/construction.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autoracemissions/sim_traffic_signs/construction.jpg"
                 else:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/construction.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autoracemissions/traffic_signs/construction.jpg"
                 cv2.imwrite(filename, self.traffic_img)
                 self.get_logger().info(f"construction 이미지가 저장되었습니다.")
                 

@@ -92,9 +92,9 @@ class TunnelSign(LifecycleNode):
             # 사전에 촬영한 이미지 불러오기
             try:
                 if self.sim:
-                    tunnel_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/tunnel.jpg', 0)
+                    tunnel_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/sim_traffic_signs/tunnel.jpg', 0)
                 else:
-                    tunnel_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/tunnel.jpg', 0)
+                    tunnel_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/tunnel.jpg', 0)
                 cv2.imshow("tunnel_sign", tunnel_template)
                 w, h = tunnel_template.shape[::-1]
                 box_loc = self.match_template(gray, tunnel_template)
@@ -115,7 +115,7 @@ class TunnelSign(LifecycleNode):
                     return
                     
             except Exception as e:
-                tunnel_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/empty_img.jpg', 0)
+                tunnel_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/empty_img.jpg', 0)
                 cv2.imshow("tunnel_sign", tunnel_template)
                 #self.get_logger().info(f"{e}")
             
@@ -138,9 +138,9 @@ class TunnelSign(LifecycleNode):
             # 키보드를 이용해 이미지 캡쳐
             elif key == ord('s'):
                 if self.sim:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/tunnel.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autorace/missions/sim_traffic_signs/tunnel.jpg"
                 else:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/tunnel.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/tunnel.jpg"
                 cv2.imwrite(filename, self.traffic_img)
                 self.get_logger().info(f"tunnel 이미지가 저장되었습니다.")
                 

@@ -98,9 +98,9 @@ class ParkingSign(LifecycleNode):
             # 사전에 촬영한 이미지 불러오기
             try:
                 if self.sim:
-                    parking_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/parking.jpg', 0)
+                    parking_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/sim_traffic_signs/parking.jpg', 0)
                 else:
-                    parking_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/parking.jpg', 0)
+                    parking_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/parking.jpg', 0)
                 cv2.imshow("parking_sign", parking_template)
                 w, h = parking_template.shape[::-1]
                 box_loc = self.match_template(gray, parking_template)
@@ -123,7 +123,7 @@ class ParkingSign(LifecycleNode):
                     return
                     
             except Exception as e:
-                parking_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/empty_img.jpg', 0)
+                parking_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/empty_img.jpg', 0)
                 cv2.imshow("parking_sign", parking_template)
                 #self.get_logger().info(f"{e}")
             
@@ -146,9 +146,9 @@ class ParkingSign(LifecycleNode):
             # 키보드를 이용해 이미지 캡쳐
             elif key == ord('s'):
                 if self.sim:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/parking.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autorace/missions/sim_traffic_signs/parking.jpg"
                 else:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/parking.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/parking.jpg"
                 cv2.imwrite(filename, self.traffic_img)
                 self.get_logger().info(f"parking 이미지가 저장되었습니다.")
                 

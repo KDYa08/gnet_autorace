@@ -102,9 +102,9 @@ class Intersection(LifecycleNode):
             try:
                 # 사전에 촬영한 표지판 이미지 불러오기
                 if self.sim:
-                    L_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/intersection_left.jpg', 0)
+                    L_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/sim_traffic_signs/intersection_left.jpg', 0)
                 else:
-                    L_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/intersection_left.jpg', 0)
+                    L_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/intersection_left.jpg', 0)
                 cv2.imshow("left_sign", L_template)
                 # 매칭 결과 중 임계값이 넘는 값들만 저장
                 w, h = L_template.shape[::-1]
@@ -134,15 +134,15 @@ class Intersection(LifecycleNode):
             
             # telmplete 이미지가 존재하지 않을 때 예외 처리
             except Exception as e:
-                L_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/empty_img.jpg', 0)
+                L_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/empty_img.jpg', 0)
                 cv2.imshow("left_sign", L_template)
                 #self.get_logger().info(f"{e}")
             
             try:   
                 if self.sim:
-                    R_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/intersection_right.jpg', 0)
+                    R_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/sim_traffic_signs/intersection_right.jpg', 0)
                 else: 
-                    R_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/intersection_right.jpg', 0)
+                    R_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/intersection_right.jpg', 0)
                 cv2.imshow("right_sign", R_template)
                 w, h = R_template.shape[::-1]
                 box_loc = self.match_template(gray, R_template)
@@ -164,7 +164,7 @@ class Intersection(LifecycleNode):
                     return
             
             except Exception as e:
-                R_template = cv2.imread('/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/empty_img.jpg', 0)
+                R_template = cv2.imread('{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/empty_img.jpg', 0)
                 cv2.imshow("right_sign", R_template)
                 self.get_logger().info(f"{e}")
             
@@ -189,17 +189,17 @@ class Intersection(LifecycleNode):
             # 키보드를 이용해 이미지 캡쳐
             elif key == ord('a'):
                 if self.sim:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/intersection_left.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autorace/missions/sim_traffic_signs/intersection_left.jpg"
                 else:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/intersection_left.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/intersection_left.jpg"
                 cv2.imwrite(filename, self.traffic_img)
                 self.get_logger().info("left 이미지가 저장되었습니다.")
             
             elif key == ord('d'):
                 if self.sim:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/sim_traffic_signs/intersection_right.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autorace/missions/sim_traffic_signs/intersection_right.jpg"
                 else:
-                    filename = "/home/kdya08/turtlebot3_ws/src/autorace_py/autorace_py/missions/traffic_signs/intersection_right.jpg"
+                    filename = "{colcon_ws}/gnet_autorace/gnet_autorace/missions/traffic_signs/intersection_right.jpg"
                 cv2.imwrite(filename, self.traffic_img)
                 self.get_logger().info("right 이미지가 저장되었습니다.")
     
