@@ -31,3 +31,16 @@ ros2 topic pub --once /mission_change std_msgs/msg/String "{data: 'construction'
 
 parking next action
 ros2 topic pub --once /parking_action std_msgs/msg/String "{data: 'next'}"
+
+nav2 initialpose topic pub
+ros2 topic pub -1 /initialpose geometry_msgs/msg/PoseWithCovarianceStamped "{header: {stamp: {sec: 0}, frame_id: 'map'}, pose: {pose: {position: {x: 5.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+
+nav2 initialpose topic sub
+ros2 topic echo /initialpose
+
+nav2 publish point sub
+ros2 topic echo /clicked_point
+
+nav2 goal toipc pub
+ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose \
+"pose: {header: {frame_id: 'map'}, pose: {position: {x: 2.0, y: 1.0, z: 0.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}}"
