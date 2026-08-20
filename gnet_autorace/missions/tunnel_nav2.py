@@ -148,15 +148,11 @@ class Nav2Manager(LifecycleNode):
         return super().on_shutdown(state)
 
     def start_nav2(self):
-
         if self.nav2_process is not None:
-
             if self.nav2_process.poll() is None:
-
                 self.get_logger().warn(
                     'Nav2 is already running'
                 )
-
                 return True
 
         map_path = '/home/kdya08/map.yaml'

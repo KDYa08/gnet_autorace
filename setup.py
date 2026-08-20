@@ -39,8 +39,6 @@ setup(
             'parking = gnet_autorace.missions.parking:main',
             'blockbar = gnet_autorace.missions.blockbar:main',
             'tunnel_sign = gnet_autorace.missions.tunnel_sign:main',
-            'tunnel_right_hand = gnet_autorace.missions.tunnel_right_hand:main',
-            'tunnel_bug2 = gnet_autorace.missions.tunnel_bug2:main',
             'tunnel_nav2 = gnet_autorace.missions.tunnel_nav2:main'
         ],
     },
