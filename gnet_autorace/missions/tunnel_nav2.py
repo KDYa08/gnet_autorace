@@ -10,6 +10,7 @@ from geometry_msgs.msg import PoseWithCovarianceStamped
 from lifecycle_msgs.srv import GetState
 from lifecycle_msgs.msg import State
 from nav2_msgs.action import NavigateToPose
+from std_msgs.msg import String
 
 import math
 import signal
@@ -52,7 +53,9 @@ class Nav2Manager(LifecycleNode):
         # callback 함수를 병렬로 실행하기 위해 사용
         self.callback_group = ReentrantCallbackGroup()
 
-        self.initial_pose_pub = self.create_publisher(PoseWithCovarianceStamped, '/initialpose', self.qos_profile)
+        self.mission_state_publisher = self.create_lifecycle_publisher(String, '/mission_state', self.qos_profile)
+        self.line_motor_publisher = self.create_lifecycle_publisher(String, '/line_motor_state', self.qos_profile)
+        self.initial_pose_publisher = self.create_publisher(PoseWithCovarianceStamped, '/initialpose', self.qos_profile)
         self.goal_client = ActionClient(self, NavigateToPose, '/navigate_to_pose', callback_group=self.callback_group)
         self.state_client = self.create_client(GetState, '/bt_navigator/get_state', callback_group=self.callback_group)
 
@@ -63,6 +66,8 @@ class Nav2Manager(LifecycleNode):
 
     def on_activate(self, state):
         self.get_logger().info('Activating...')
+        self.mission_state_publisher.on_activate(state)
+        self.line_motor_publisher.on_activate(state)
         self.start_nav2()
 
         self.get_logger().info('Activating Complete')
@@ -70,6 +75,8 @@ class Nav2Manager(LifecycleNode):
 
     def on_deactivate(self, state):
         self.get_logger().info('Deactivating...')
+        self.mission_state_publisher.on_deactivate(state)
+        self.line_motor_publisher.on_deactivate(state)
         self.cancel_goal()
         self.stop_nav2()
 
@@ -78,6 +85,9 @@ class Nav2Manager(LifecycleNode):
 
     def on_cleanup(self, state):
         self.get_logger().info('CleanUp...')
+        self.destroy_publisher(self.mission_state_publisher)
+        self.destroy_publisher(self.line_motor_publisher)
+        self.destroy_publisher(self.initial_pose_publisher)
         self.stop_nav2()
 
         if self.timer is not None:
@@ -88,6 +98,8 @@ class Nav2Manager(LifecycleNode):
 
     def on_shutdown(self, state):
         self.get_logger().info('Shutdowning...')
+        self.destroy_publisher(self.mission_state_publisher)
+        self.destroy_publisher(self.line_motor_publisher)
         self.cancel_goal()
         self.stop_nav2()
 
@@ -167,6 +179,7 @@ class Nav2Manager(LifecycleNode):
         if state_id == State.PRIMARY_STATE_INACTIVE:
             if not self.nav2_active:
                 self.get_logger().info('Nav2 is ACTIVE')
+                self.nav2_active = True
                 self.on_nav2_active()
 
     def on_nav2_active(self):
@@ -176,9 +189,6 @@ class Nav2Manager(LifecycleNode):
         # Initial pose
         if not self.initial_pose_sent:
             self.send_initial_pose()
-            # AMCL이 initial pose를 받을 시간을 약간 준다.
-            # 바로 goal을 보내는 것보다 안전하다.
-
             self.create_timer(1.0, self.send_goal, callback_group=self.callback_group)
 
     def send_initial_pose(self):
@@ -200,13 +210,8 @@ class Nav2Manager(LifecycleNode):
         msg.pose.pose.orientation.z = math.sin(self.initial_yaw / 2.0)
         msg.pose.pose.orientation.w = math.cos(self.initial_yaw / 2.0)
 
-        # Covariance
-        #msg.pose.covariance[0] = 0.25
-        #msg.pose.covariance[7] = 0.25
-        #msg.pose.covariance[35] = 0.0685
-
         # Publish
-        self.initial_pose_pub.publish(msg)
+        self.initial_pose_publisher.publish(msg)
         self.initial_pose_sent = True
         self.get_logger().info('Initial pose published')
         self.get_logger().info(f'x={self.initial_x}, y={self.initial_y}, yaw={self.initial_yaw}')
@@ -281,6 +286,15 @@ class Nav2Manager(LifecycleNode):
         # Action 수행 결과 출력
         status = result.status
         self.get_logger().info(f'Navigation finished. status={status}')
+        
+        # 목표 지점 이동 성공 시 status=4
+        if status == 4:
+            msg = String()
+            msg.data = 'play'
+            self.line_motor_publisher.publish(msg)
+            msg.data = 'tunnel'
+            self.mission_state_publisher.publish(msg)
+            
 
     def cancel_goal(self):
         # self.goal_handle 변수가 존재하는지 확인
