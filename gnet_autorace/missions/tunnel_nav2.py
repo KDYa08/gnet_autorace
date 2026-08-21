@@ -25,25 +25,31 @@ class Nav2Manager(LifecycleNode):
         self.get_logger().info('Lifecycle node created.')
         self.nav2_process = None
 
+        # 메시지 송신 여부
         self.initial_pose_sent = False
         self.goal_sent = False
 
+        # 동작 활성화 여부
         self.nav2_active = False
         self.shutdown_started = False
 
+        # 초기 위치
         self.initial_x = 0.0
         self.initial_y = 0.0
         self.initial_yaw = 0.0
 
+        # 목표 위치
         self.goal_x = 2.0
         self.goal_y = 1.0
         self.goal_yaw = 0.0
 
+        # nav2 상태
         self.nav2_state = 'unknown'
 
     def on_configure(self, state):
         self.get_logger().info('Configuring...')
         self.qos_profile = QoSProfile(depth=10)
+        # callback 함수를 병렬로 실행하기 위해 사용
         self.callback_group = ReentrantCallbackGroup()
 
         self.initial_pose_pub = self.create_publisher(PoseWithCovarianceStamped, '/initialpose', self.qos_profile)
@@ -89,16 +95,19 @@ class Nav2Manager(LifecycleNode):
         return super().on_shutdown(state)
 
     def start_nav2(self):
+        # nav2가 이미 실행중인 상태
         if self.nav2_process is not None:
             if self.nav2_process.poll() is None:
                 self.get_logger().warn('Nav2 is already running')
                 return True
 
-        map_path = '/home/kdya08/map.yaml'
+        # map 저장 경로
+        map_path = '/home/{user}/map.yaml'
 
         self.get_logger().info('Starting Nav2...')
 
         try:
+            # nav2 실행
             self.nav2_process = subprocess.Popen(
                 [
                     'ros2',
@@ -121,19 +130,20 @@ class Nav2Manager(LifecycleNode):
         return True
 
     def check_nav2_status(self):
+        # 목표 지점을 보냈을 시 생략
         if self.goal_sent:
             return
 
+        # nav2가 활성화 되이지 않을 때
         if not self.state_client.service_is_ready():
             self.nav2_state = 'unknown'
             self.get_logger().info('Nav2 lifecycle service is not ready')
             return
 
+        # nav2 상태 확인 요청
         request = GetState.Request()
         future = self.state_client.call_async(request)
-        future.add_done_callback(
-            self.nav2_state_callback
-        )
+        future.add_done_callback(self.nav2_state_callback)
 
     def nav2_state_callback(self, future):
         try:
@@ -144,13 +154,16 @@ class Nav2Manager(LifecycleNode):
             self.nav2_state = 'unknown'
             return
 
+        # nav2 srv 상태를 저장
         state_id = response.current_state.id
         state_label = response.current_state.label
 
+        # 상태가 변경되면 변경된 상태를 저장하고 출력
         if self.nav2_state != state_label:
             self.nav2_state = state_label
             self.get_logger().warn(f'Nav2 state changed: {state_label} ({state_id})')
 
+        # nav2 상태가 configure라면 Activate로 변경
         if state_id == State.PRIMARY_STATE_INACTIVE:
             if not self.nav2_active:
                 self.get_logger().info('Nav2 is ACTIVE')
@@ -184,19 +197,13 @@ class Nav2Manager(LifecycleNode):
         # Quaternion
         msg.pose.pose.orientation.x = 0.0
         msg.pose.pose.orientation.y = 0.0
-
-        msg.pose.pose.orientation.z = math.sin(
-            self.initial_yaw / 2.0
-        )
-
-        msg.pose.pose.orientation.w = math.cos(
-            self.initial_yaw / 2.0
-        )
+        msg.pose.pose.orientation.z = math.sin(self.initial_yaw / 2.0)
+        msg.pose.pose.orientation.w = math.cos(self.initial_yaw / 2.0)
 
         # Covariance
-        msg.pose.covariance[0] = 0.25
-        msg.pose.covariance[7] = 0.25
-        msg.pose.covariance[35] = 0.0685
+        #msg.pose.covariance[0] = 0.25
+        #msg.pose.covariance[7] = 0.25
+        #msg.pose.covariance[35] = 0.0685
 
         # Publish
         self.initial_pose_pub.publish(msg)
@@ -208,7 +215,7 @@ class Nav2Manager(LifecycleNode):
         if self.goal_sent:
             return
 
-        # Nav2 ACTIVE 확인
+        # nav2 active 확인
         if not self.nav2_active:
             self.get_logger().warn('Nav2 is not ACTIVE. Goal not sent.')
             return
@@ -231,7 +238,6 @@ class Nav2Manager(LifecycleNode):
         # Quaternion
         goal_msg.pose.pose.orientation.x = 0.0
         goal_msg.pose.pose.orientation.y = 0.0
-
         goal_msg.pose.pose.orientation.z = math.sin(self.goal_yaw / 2.0)
         goal_msg.pose.pose.orientation.w = math.cos(self.goal_yaw / 2.0)
 
@@ -272,10 +278,13 @@ class Nav2Manager(LifecycleNode):
             self.get_logger().error(f'Failed to receive goal result: {e}')
             return
 
+        # Action 수행 결과 출력
         status = result.status
         self.get_logger().info(f'Navigation finished. status={status}')
 
     def cancel_goal(self):
+        # self.goal_handle 변수가 존재하는지 확인
+        # 목표 지점으로 이동 중인 상태
         if not hasattr(self, 'goal_handle'):
             return
 
@@ -315,6 +324,7 @@ class Nav2Manager(LifecycleNode):
             pgid = os.getpgid(process.pid)
 
             self.get_logger().info(f'Sending SIGINT to process group {pgid}')
+            # terminal 종료 신호
             os.killpg(pgid, signal.SIGINT)
 
             # 정상 종료 대기
@@ -330,6 +340,7 @@ class Nav2Manager(LifecycleNode):
             self.get_logger().warn('Sending SIGTERM to Nav2 process group')
 
             try:
+                # 종료 요청 송신
                 os.killpg(pgid, signal.SIGTERM)
 
             except ProcessLookupError:
@@ -348,6 +359,7 @@ class Nav2Manager(LifecycleNode):
             self.get_logger().error('Force killing Nav2 process group')
 
             try:
+                # 강제 종료 명령
                 os.killpg(pgid, signal.SIGKILL)
 
             except ProcessLookupError:
@@ -380,6 +392,7 @@ def main(args=None):
         node.get_logger().info('KeyboardInterrupt received')
 
     finally:
+        # 실행 중인 프로그램 종료 신호 송신
         try:
             node.cancel_goal()
         except Exception as e:
