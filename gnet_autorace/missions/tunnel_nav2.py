@@ -24,7 +24,18 @@ class Nav2Manager(LifecycleNode):
     def __init__(self):
         super().__init__('tunnel')
         self.get_logger().info('Lifecycle node created.')
-        self.nav2_process = None
+
+    def on_configure(self, state):
+        self.get_logger().info('Configuring...')
+        self.qos_profile = QoSProfile(depth=10)
+        # callback 함수를 병렬로 실행하기 위해 사용
+        self.callback_group = ReentrantCallbackGroup()
+
+        self.mission_state_publisher = self.create_lifecycle_publisher(String, '/mission_state', self.qos_profile)
+        self.line_motor_publisher = self.create_lifecycle_publisher(String, '/line_motor_state', self.qos_profile)
+        self.initial_pose_publisher = self.create_publisher(PoseWithCovarianceStamped, '/initialpose', self.qos_profile)
+        self.goal_client = ActionClient(self, NavigateToPose, '/navigate_to_pose', callback_group=self.callback_group)
+        self.state_client = self.create_client(GetState, '/bt_navigator/get_state', callback_group=self.callback_group)
 
         # 메시지 송신 여부
         self.initial_pose_sent = False
@@ -46,19 +57,8 @@ class Nav2Manager(LifecycleNode):
 
         # nav2 상태
         self.nav2_state = 'unknown'
-
-    def on_configure(self, state):
-        self.get_logger().info('Configuring...')
-        self.qos_profile = QoSProfile(depth=10)
-        # callback 함수를 병렬로 실행하기 위해 사용
-        self.callback_group = ReentrantCallbackGroup()
-
-        self.mission_state_publisher = self.create_lifecycle_publisher(String, '/mission_state', self.qos_profile)
-        self.line_motor_publisher = self.create_lifecycle_publisher(String, '/line_motor_state', self.qos_profile)
-        self.initial_pose_publisher = self.create_publisher(PoseWithCovarianceStamped, '/initialpose', self.qos_profile)
-        self.goal_client = ActionClient(self, NavigateToPose, '/navigate_to_pose', callback_group=self.callback_group)
-        self.state_client = self.create_client(GetState, '/bt_navigator/get_state', callback_group=self.callback_group)
-
+        self.nav2_process = None
+        
         self.timer = self.create_timer(0.5, self.check_nav2_status, callback_group=self.callback_group)
 
         self.get_logger().info('Configuring Complete')
